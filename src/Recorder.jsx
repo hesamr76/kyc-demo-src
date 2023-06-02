@@ -86,46 +86,7 @@ export const VideoRecorder = ({ instruction }) => {
 
   const handleUploadVideo = () => {
     const blob = new Blob(chunksRef.current, { type: "video/mp4" });
-
-    // Resize the video using canvas
-    const videoElement = document.createElement("video");
-    const videoUrl = URL.createObjectURL(blob);
-    videoElement.src = videoUrl;
-
-    videoElement.onloadedmetadata = () => {
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-
-      const videoWidth = videoElement.videoWidth;
-      const videoHeight = videoElement.videoHeight;
-      const aspectRatio = videoWidth / videoHeight;
-
-      const maxWidth = 640; // Set the desired maximum width for the resized video
-      const maxHeight = maxWidth / aspectRatio;
-
-      canvas.width = maxWidth;
-      canvas.height = maxHeight;
-
-      // Draw the video frame onto the canvas
-      context.drawImage(videoElement, 0, 0, maxWidth, maxHeight);
-
-      // Convert the canvas content to a data URL
-      const resizedDataUrl = canvas.toDataURL("video/mp4", 0.5); // Adjust the quality if needed (0.5 represents 50% quality)
-
-      // Convert the data URL back to a Blob
-      const byteString = atob(resizedDataUrl.split(",")[1]);
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-
-      const resizedBlob = new Blob([ab], { type: "video/mp4" });
-
-      uploadBlob(resizedBlob);
-      URL.revokeObjectURL(videoUrl);
-    };
+    uploadBlob(blob);
   };
 
   const startRecordingTimer = () => {
