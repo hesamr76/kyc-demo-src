@@ -123,15 +123,15 @@ export const VideoRecorder = ({ instruction }) => {
     return instruction
       .map((instru, index) => {
         switch (instru) {
-          case "forward":
+          case "Forward":
             return "روبه‌رو";
-          case "right":
+          case "Right":
             return "راست";
-          case "left":
+          case "Left":
             return "چپ";
-          case "down":
+          case "Down":
             return "پایین";
-          case "up":
+          case "Up":
             return "بالا";
 
           default:
