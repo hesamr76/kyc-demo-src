@@ -18,12 +18,13 @@ body {
 .face-animation {
   width: 100%;
   max-width: 300px;
-  transition: all 300ms ease-in;
 }
-.mini-face-animation {
-  width: 100%;
-  max-width: 0px;
-  transition: all 300ms ease-out;
+
+.face-loading {
+  width: 20px;
+  max-width: 300px;
+  transition: all 300ms ease-in;
+  margin: 8px auto;
 }
 
 .input-holder {
@@ -108,4 +109,11 @@ video {
   left: -10%;
   right: 0;
   top: -10%;
+}
+
+.toast-error > div {
+  background-color: red;
+}
+.toast-success > div {
+  background-color: green;
 }
