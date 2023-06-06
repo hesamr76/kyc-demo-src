@@ -16,7 +16,7 @@ export const translate = (instructions: Instructions) => {
           return "بالا";
 
         default:
-          return "روبه‌رو";
+          return instruction;
       }
     })
     .join(" >  ");
