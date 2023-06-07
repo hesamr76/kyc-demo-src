@@ -87,6 +87,7 @@ export const VideoRecorder = ({
       onSuccess: (response) => {
         toast(response.data.msg, {
           className: response.data.code === 20 ? "toast-success" : "",
+          duration: 20000,
         });
       },
     });
