@@ -78,6 +78,7 @@ button {
 }
 
 img {
+  margin: 8px auto 4px;
   width: 300px;
   border-radius: 12px;
 }

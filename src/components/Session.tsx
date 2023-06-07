@@ -48,8 +48,8 @@ export const Session = ({
       )}
 
       <button
-        disabled={code.length != 10}
-        style={{ opacity: code.length == 10 ? 1 : 0.5 }}
+        disabled={code.length !== 10}
+        style={{ opacity: code.length === 10 ? 1 : 0.5 }}
         onClick={() => (instructions ? setInstructions() : getSession())}
       >
         مرحله {!instructions ? "بعد" : "قبل"}

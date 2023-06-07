@@ -86,7 +86,7 @@ export const VideoRecorder = ({
     mutate(formData, {
       onSuccess: (response) => {
         toast(response.data.msg, {
-          className: response.data.code === 20 ? "toast-success" : "",
+          className: response.data.code === "20" ? "toast-success" : "",
           duration: 20000,
         });
       },
@@ -136,31 +136,30 @@ export const VideoRecorder = ({
   ) : (
     <div>
       <div>
-        {photoData ? (
-          <div>
-            <img src={photoData} alt="Captured Photo" />
-          </div>
-        ) : (
-          <div className="input-holder">
-            <label>عکس کارت ملی</label>
-            <input
-              className="image-input"
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleInputChange}
-            />
-          </div>
-        )}
+        <div className="input-holder">
+          <label>عکس کارت ملی</label>
+          <input
+            className="image-input"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleInputChange}
+          />
+        </div>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+        {photoData && <img src={photoData} />}
       </div>
 
       {photoData && instructions && (
-        <p>
-          ابتدا دکمه ضبط ویدیو را زده و پس از شروع ضبط، به ترتیبی که در زیر آمده
-          است سر خود را حرکت دهید.
-        </p>
+        <div>
+          <p>
+            ابتدا دکمه ضبط ویدیو را زده و پس از شروع ضبط، به ترتیبی که در زیر
+            آمده است سر خود را حرکت دهید.
+          </p>
+
+          <h5>{translate(instructions)}</h5>
+        </div>
       )}
-      {photoData && instructions && <h5>{translate(instructions)}</h5>}
 
       <div className="video">
         {isRecording && (
@@ -195,21 +194,20 @@ export const VideoRecorder = ({
         </button>
       )}
 
-      {isLoading && uploadPercentage && uploadPercentage < 100 && (
-        <p>%در حال بارگذاری: {uploadPercentage}</p>
-      )}
-
-      {isLoading && uploadPercentage == 100 && (
-        <>
-          <p>زمان تقریبی انتظار: ۵دقیقه</p>
-          <Lottie
-            animationData={faceLoading}
-            loop={true}
-            className={"face-loading"}
-            style={{ width: uploadPercentage }}
-          />
-        </>
-      )}
+      {isLoading &&
+        (uploadPercentage < 100 ? (
+          <p>%در حال بارگذاری: {uploadPercentage}</p>
+        ) : (
+          <>
+            <p>زمان تقریبی انتظار: ۵دقیقه</p>
+            <Lottie
+              animationData={faceLoading}
+              loop={true}
+              className={"face-loading"}
+              style={{ width: uploadPercentage }}
+            />
+          </>
+        ))}
     </div>
   );
 };
