@@ -2,8 +2,8 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-simple-toasts";
 
-// const BASE_URL = "http://127.0.0.1:5001/";
-const BASE_URL = "https://kyc.irsign.com/";
+const BASE_URL = "http://127.0.0.1:5001/";
+// const BASE_URL = "https://kyc.irsign.com/";
 
 type OptionsType = {
   onSuccess?: (response: AxiosResponse) => void;
