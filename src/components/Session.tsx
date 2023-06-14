@@ -57,6 +57,7 @@ export const Session = ({
         onClick={() =>
           instructions ? setInstructions(undefined) : getSession()
         }
+        className={instructions ? "outline" : undefined}
       >
         مرحله {!instructions ? "بعد" : "قبل"}
       </button>
