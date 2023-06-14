@@ -4,13 +4,15 @@ import Lottie from "lottie-react";
 import "./assets/styles/App.css";
 import faceArea from "./assets/animations/face-animation.json";
 
-import { VideoRecorder } from "./components/Recorder";
+import { Recorder } from "./components/Recorder";
 import { Session } from "./components/Session";
-import { Instructions } from "./types";
+import { Instructions, ResponseType } from "./types";
+import { Result } from "./components/Result";
 
 function App() {
   const [code, setCode] = useState("");
   const [instructions, setInstructions] = useState<Instructions | undefined>();
+  const [response, setResponse] = useState<ResponseType | null>(null);
 
   return (
     <div className="App">
@@ -23,17 +25,35 @@ function App() {
           />
         )}
 
-        <Session
-          code={code}
-          setCode={(code) => {
-            setCode(code);
-          }}
-          instructions={instructions}
-          setInstructions={(newInstructions) =>
-            setInstructions(newInstructions)
-          }
-        />
-        <VideoRecorder instructions={instructions} code={code} />
+        {response ? (
+          <Result
+            response={response}
+            onBack={() => {
+              setResponse(null);
+            }}
+          />
+        ) : (
+          <>
+            <Session
+              code={code}
+              setCode={(code) => {
+                setCode(code);
+              }}
+              instructions={instructions}
+              setInstructions={(newInstructions) =>
+                setInstructions(newInstructions)
+              }
+            />
+            <Recorder
+              code={code}
+              response={response}
+              instructions={instructions}
+              setResponse={(response) => {
+                setResponse(response);
+              }}
+            />
+          </>
+        )}
       </header>
     </div>
   );
