@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/kyc-demo-src/static/css/main.3d7c6ac6.css",
+    "main.js": "/kyc-demo-src/static/js/main.f27cc924.js",
+    "index.html": "/kyc-demo-src/index.html",
+    "main.3d7c6ac6.css.map": "/kyc-demo-src/static/css/main.3d7c6ac6.css.map",
+    "main.f27cc924.js.map": "/kyc-demo-src/static/js/main.f27cc924.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3d7c6ac6.css",
+    "static/js/main.f27cc924.js"
+  ]
+}
