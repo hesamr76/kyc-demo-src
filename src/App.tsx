@@ -9,7 +9,8 @@ import { Session } from "./components/Session";
 import { Instructions } from "./types";
 
 function App() {
-  const [instructions, setInstructions] = useState<Instructions>();
+  const [code, setCode] = useState("");
+  const [instructions, setInstructions] = useState<Instructions | undefined>();
 
   return (
     <div className="App">
@@ -23,12 +24,16 @@ function App() {
         )}
 
         <Session
+          code={code}
+          setCode={(code) => {
+            setCode(code);
+          }}
           instructions={instructions}
           setInstructions={(newInstructions) =>
             setInstructions(newInstructions)
           }
         />
-        <VideoRecorder instructions={instructions} />
+        <VideoRecorder instructions={instructions} code={code} />
       </header>
     </div>
   );

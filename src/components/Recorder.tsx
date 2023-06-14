@@ -12,21 +12,23 @@ const VIDEO_TIME = 7000;
 let interval: NodeJS.Timer;
 let timeout: NodeJS.Timeout;
 
-export const VideoRecorder = ({
-  instructions,
-}: {
+type RecorderType = {
+  code: string;
   instructions?: Instructions;
-}) => {
+};
+export const VideoRecorder = ({ code, instructions }: RecorderType) => {
   const videoRef = useRef<{ srcObject: MediaStream | null }>({
     srcObject: null,
   });
   const mediaRecorderRef = useRef<MediaRecorder>();
-  const [chunks, setChunks] = useState<Blob[]>([]);
 
   const [photoData, setPhotoData] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File>();
+  const [chunks, setChunks] = useState<Blob[]>([]);
   const [recordingTime, setRecordingTime] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
+
+  const { isLoading, mutate, uploadPercentage } = useAxios("face");
 
   const handleStartRecording = () => {
     navigator.mediaDevices
@@ -74,14 +76,13 @@ export const VideoRecorder = ({
     }
   };
 
-  const { isLoading, mutate, uploadPercentage } = useAxios("face");
   const uploadBlob = async (VideoResizedBlob: Blob) => {
     const formData = new FormData();
     formData.append("video", VideoResizedBlob, "recorded-video.mp4");
     if (imageFile) {
       formData.append("image", imageFile);
     }
-    formData.append("national_code", "0021219958");
+    formData.append("national_code", code);
 
     mutate(formData, {
       onSuccess: (response) => {

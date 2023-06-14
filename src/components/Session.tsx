@@ -1,16 +1,19 @@
-import { useState } from "react";
 import { useAxios } from "../hooks/useAxios";
 import { Instructions } from "../types";
 
 type SessionPropsType = {
+  code: string;
+  setCode: (code: string) => void;
   instructions?: Instructions;
   setInstructions: (instructions?: Instructions) => void;
 };
+
 export const Session = ({
+  code,
+  setCode,
   instructions,
   setInstructions,
 }: SessionPropsType) => {
-  const [code, setCode] = useState("");
   const { isLoading, mutate } = useAxios("session");
 
   const getSession = async () => {
@@ -19,7 +22,8 @@ export const Session = ({
 
     mutate(formData, {
       onSuccess: (response) => {
-        setInstructions(response.data.instruction);
+        setCode(response?.data?.code);
+        setInstructions(response?.data?.instruction);
       },
     });
   };
@@ -50,7 +54,9 @@ export const Session = ({
       <button
         disabled={code.length !== 10}
         style={{ opacity: code.length === 10 ? 1 : 0.5 }}
-        onClick={() => (instructions ? setInstructions() : getSession())}
+        onClick={() =>
+          instructions ? setInstructions(undefined) : getSession()
+        }
       >
         مرحله {!instructions ? "بعد" : "قبل"}
       </button>

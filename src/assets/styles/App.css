@@ -30,7 +30,7 @@ body {
 .input-holder {
   width: 300px;
   text-align: right;
-  margin-top: 8px;
+  margin: 8px auto;
 }
 
 label {
