@@ -1,84 +1,34 @@
-import React, { ChangeEvent, useRef, useState } from "react";
+import { useState } from "react";
 
 import Lottie from "lottie-react";
-import faceArea from "../assets/animations/face-area.json";
+
 import faceLoading from "../assets/animations/face-loading.json";
 import { useAxios } from "../hooks/useAxios";
 import toast from "react-simple-toasts";
-import { Instructions } from "../types";
+import { Instructions, ResponseType } from "../types";
 import { translate } from "../utils";
-
-const VIDEO_TIME = 7000;
-let interval: NodeJS.Timer;
-let timeout: NodeJS.Timeout;
+import { ImageCapture } from "./ImageCapture";
+import { VideoRecorder } from "./VideoRecorder";
 
 type RecorderType = {
   code: string;
   instructions?: Instructions;
+  setResponse: (response: ResponseType | null) => void;
 };
-export const VideoRecorder = ({ code, instructions }: RecorderType) => {
-  const videoRef = useRef<{ srcObject: MediaStream | null }>({
-    srcObject: null,
-  });
-  const mediaRecorderRef = useRef<MediaRecorder>();
 
-  const [photoData, setPhotoData] = useState<string | null>(null);
+export const Recorder = ({ code, instructions, setResponse }: RecorderType) => {
   const [imageFile, setImageFile] = useState<File>();
+
   const [chunks, setChunks] = useState<Blob[]>([]);
-  const [recordingTime, setRecordingTime] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
 
   const { isLoading, mutate, uploadPercentage } = useAxios("face");
 
-  const handleStartRecording = () => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: { width: 512, height: 512, facingMode: "user" },
-        audio: false,
-      })
-      .then((stream) => {
-        videoRef.current.srcObject = stream;
+  const handleUpload = () => {
+    const VideoBlob = new Blob(chunks, { type: "video/mp4" });
 
-        mediaRecorderRef.current = new MediaRecorder(stream);
-
-        mediaRecorderRef.current.ondataavailable = handleDataAvailable;
-        mediaRecorderRef.current.start();
-
-        setIsRecording(true);
-        stopRecordingTimer();
-        [interval, timeout] = startRecordingTimer();
-      })
-      .catch((error) => {
-        console.error("Error accessing user media:", error);
-      });
-  };
-
-  const handleStopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setIsRecording(false);
-    stopRecordingTimer();
-
-    const stream = videoRef.current.srcObject;
-    if (stream) {
-      const tracks = stream.getTracks();
-
-      tracks.forEach((track) => {
-        track.stop();
-      });
-    }
-
-    videoRef.current.srcObject = null;
-  };
-
-  const handleDataAvailable = (event: BlobEvent) => {
-    if (event.data.size > 0) {
-      setChunks([event.data]);
-    }
-  };
-
-  const uploadBlob = async (VideoResizedBlob: Blob) => {
     const formData = new FormData();
-    formData.append("video", VideoResizedBlob, "recorded-video.mp4");
+    formData.append("video", VideoBlob, "recorded-video.mp4");
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -86,6 +36,8 @@ export const VideoRecorder = ({ code, instructions }: RecorderType) => {
 
     mutate(formData, {
       onSuccess: (response) => {
+        setResponse(response?.data);
+
         toast(response.data.msg, {
           className: response.data.code === "20" ? "toast-success" : "",
           duration: 20000,
@@ -94,66 +46,12 @@ export const VideoRecorder = ({ code, instructions }: RecorderType) => {
     });
   };
 
-  const handleUploadVideo = () => {
-    const blob = new Blob(chunks, { type: "video/mp4" });
-    uploadBlob(blob);
-  };
-
-  const startRecordingTimer = () => {
-    const timerInterval = setInterval(() => {
-      setRecordingTime((prevTime) => prevTime + 1);
-    }, 1000);
-
-    const timerTimeout = setTimeout(() => {
-      handleStopRecording();
-    }, VIDEO_TIME);
-
-    return [timerInterval, timerTimeout];
-  };
-
-  const stopRecordingTimer = () => {
-    clearInterval(interval);
-    clearTimeout(timeout);
-    setRecordingTime(0);
-  };
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) {
-      return;
-    }
-    const file = event.target.files[0];
-    if (file && file.type.includes("image")) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPhotoData(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  return !instructions ? (
-    <></>
-  ) : (
+  return instructions ? (
     <div>
-      <div>
-        <div className="input-holder">
-          <label>عکس کارت ملی</label>
-          <input
-            className="image-input"
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handleInputChange}
-          />
-        </div>
-        {/* eslint-disable-next-line jsx-a11y/alt-text */}
-        {photoData && <img src={photoData} />}
-      </div>
-
-      {photoData && instructions && (
+      <ImageCapture code={code} setImageFile={setImageFile} />
+      {Boolean(imageFile) && instructions && (
         <div>
-          <p>
+          <p dir="rtl">
             ابتدا دکمه ضبط ویدیو را زده و پس از شروع ضبط، به ترتیبی که در زیر
             آمده است سر خود را حرکت دهید.
           </p>
@@ -162,32 +60,17 @@ export const VideoRecorder = ({ code, instructions }: RecorderType) => {
         </div>
       )}
 
-      <div className="video">
-        {isRecording && (
-          <Lottie animationData={faceArea} loop={true} className="video-face" />
-        )}
-        <video
-          ref={videoRef as React.LegacyRef<HTMLVideoElement>}
-          autoPlay
-          muted
-        />
-      </div>
+      <VideoRecorder
+        disabled={isLoading || !Boolean(imageFile)}
+        chunks={chunks}
+        setChunks={setChunks}
+        isRecording={isRecording}
+        setIsRecording={setIsRecording}
+      />
 
-      {isRecording && recordingTime > 0 && (
-        <p>زمان ویدیو: {recordingTime} ثانیه</p>
-      )}
-
-      {!isRecording && photoData && !isLoading && (
-        <button onClick={handleStartRecording}>
-          ضبط ویدیو {!!chunks.length ? "دیگر" : ""}
-        </button>
-      )}
-
-      {isRecording && <button onClick={handleStopRecording}>توقف</button>}
-
-      {photoData && !!chunks.length && !isRecording && (
+      {Boolean(imageFile) && !!chunks.length && !isRecording && (
         <button
-          onClick={handleUploadVideo}
+          onClick={handleUpload}
           disabled={isLoading}
           style={{ opacity: isLoading ? 0.5 : 1 }}
         >
@@ -210,5 +93,5 @@ export const VideoRecorder = ({ code, instructions }: RecorderType) => {
           </>
         ))}
     </div>
-  );
+  ) : null;
 };
