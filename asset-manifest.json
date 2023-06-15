@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/kyc-demo-src/static/css/main.2436a8d3.css",
-    "main.js": "/kyc-demo-src/static/js/main.337ab7c8.js",
+    "main.js": "/kyc-demo-src/static/js/main.ff945b7c.js",
     "index.html": "/kyc-demo-src/index.html",
     "main.2436a8d3.css.map": "/kyc-demo-src/static/css/main.2436a8d3.css.map",
-    "main.337ab7c8.js.map": "/kyc-demo-src/static/js/main.337ab7c8.js.map"
+    "main.ff945b7c.js.map": "/kyc-demo-src/static/js/main.ff945b7c.js.map"
   },
   "entrypoints": [
     "static/css/main.2436a8d3.css",
-    "static/js/main.337ab7c8.js"
+    "static/js/main.ff945b7c.js"
   ]
 }
