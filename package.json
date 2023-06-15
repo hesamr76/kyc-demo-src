@@ -2,6 +2,7 @@
   "name": "kyc-sdk",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://hesamr76.github.io/kyc-demo-src",
   "dependencies": {
     "axios": "^1.4.0",
     "lottie-react": "^2.4.0",
@@ -11,6 +12,8 @@
     "react-simple-toasts": "^3.7.0"
   },
   "scripts": {
+    "predeploy": "yarn build",
+    "deploy": "npx gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build"
   },
@@ -31,7 +34,6 @@
       "last 1 safari version"
     ]
   },
-  "homepage": ".",
   "devDependencies": {
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.8",
