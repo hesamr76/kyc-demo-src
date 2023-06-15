@@ -132,7 +132,7 @@ video {
   flex-direction: column;
 }
 
-.video-successful {
+.verification {
   max-width: 400px;
   margin-top: auto;
 }
