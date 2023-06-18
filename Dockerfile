@@ -1,11 +1,20 @@
-FROM node:alpine as builder
-
+FROM node:alpine as dependencies
 WORKDIR /app
+
+COPY package.json yarn.lock*  ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
+
+
+FROM node:alpine AS builder
+WORKDIR /app
+
+COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
-RUN yarn
 RUN yarn build
-
 
 FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
