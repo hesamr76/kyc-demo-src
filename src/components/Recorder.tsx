@@ -14,15 +14,21 @@ type RecorderType = {
   code: string;
   instructions?: Instructions;
   setResponse: (response: ResponseType | null) => void;
+  publicKey: string;
 };
 
-export const Recorder = ({ code, instructions, setResponse }: RecorderType) => {
+export const Recorder = ({
+  code,
+  instructions,
+  setResponse,
+  publicKey,
+}: RecorderType) => {
   const [imageFile, setImageFile] = useState<File>();
 
   const [chunks, setChunks] = useState<Blob[]>([]);
   const [isRecording, setIsRecording] = useState(false);
 
-  const { isLoading, mutate, uploadPercentage } = useAxios("face");
+  const { isLoading, mutate, uploadPercentage } = useAxios("/face");
 
   const handleUpload = () => {
     const VideoBlob = new Blob(chunks, { type: "video/mp4" });
@@ -33,6 +39,7 @@ export const Recorder = ({ code, instructions, setResponse }: RecorderType) => {
       formData.append("image", imageFile);
     }
     formData.append("national_code", code);
+    formData.append("publicKey", publicKey);
 
     mutate(formData, {
       onSuccess: (response) => {

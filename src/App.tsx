@@ -14,9 +14,25 @@ function App() {
   const [instructions, setInstructions] = useState<Instructions | undefined>();
   const [response, setResponse] = useState<ResponseType | null>(null);
 
+  const queryParameters = new URLSearchParams(window.location.search);
+  const publicKey = queryParameters.get("key") || "";
+
   return (
     <div className="App">
       <header className="App-header">
+        {window.opener && (
+          <button
+            onClick={() => {
+              window.opener?.postMessage(
+                { validationToken: "your_validation_token" },
+                "*"
+              );
+              window.close();
+            }}
+          >
+            بازگشت به سایت پذیرنده
+          </button>
+        )}
         {!instructions && (
           <Lottie
             animationData={faceArea}
@@ -43,6 +59,7 @@ function App() {
               setInstructions={(newInstructions) =>
                 setInstructions(newInstructions)
               }
+              publicKey={publicKey}
             />
             <Recorder
               code={code}
@@ -50,6 +67,7 @@ function App() {
               setResponse={(response) => {
                 setResponse(response);
               }}
+              publicKey={publicKey}
             />
           </>
         )}

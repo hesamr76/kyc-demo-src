@@ -6,6 +6,7 @@ type SessionPropsType = {
   setCode: (code: string) => void;
   instructions?: Instructions;
   setInstructions: (instructions?: Instructions) => void;
+  publicKey: string;
 };
 
 export const Session = ({
@@ -13,12 +14,14 @@ export const Session = ({
   setCode,
   instructions,
   setInstructions,
+  publicKey,
 }: SessionPropsType) => {
-  const { isLoading, mutate } = useAxios("session");
+  const { isLoading, mutate } = useAxios("/session");
 
   const getSession = async () => {
     const formData = new FormData();
     formData.append("national_code", code);
+    formData.append("publicKey", publicKey);
 
     mutate(formData, {
       onSuccess: (response) => {
