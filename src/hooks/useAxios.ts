@@ -2,7 +2,7 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-simple-toasts";
 
-const BASE_URL = "https://api.face-kyc.ir";
+const BASE_URL = "https://api.face-kyc.ir/";
 // const BASE_URL = "http://localhost:5000/";
 
 type OptionsType = {
